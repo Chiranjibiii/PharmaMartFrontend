@@ -1,10 +1,11 @@
-import Form from "../Form"
+import Form from "../Form";
 
+const Login = () => {
+      const handleLogin=()=>{
+    }
+  return (
+    <Form type="login" onsubmit={handleLogin}/>
+  )
+};
 
-const Login=()=>{
-    return(
-       <Form />
-    )
-}
-
-export default Login 
+export default Login;

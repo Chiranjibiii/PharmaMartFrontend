@@ -1,6 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import API from '../http'
+import type { Status } from '../globals/types/types'
 
 interface Registerdata{
     username:string,
@@ -23,11 +24,11 @@ interface User{
 
 interface AuthState{
     user:User
-    status:string
+    status:Status
 }
 const initialState:AuthState={
     user: {} as User,
-    status:''
+    status:'loading'
 }
 
 const authSlice=createSlice({
@@ -38,14 +39,21 @@ const authSlice=createSlice({
         setUser(state:AuthState,action:PayloadAction<User>){
             state.user=action.payload
         },
-        setStatus(state:AuthState,action:PayloadAction<string>){
+        setStatus(state:AuthState,action:PayloadAction<Status>){
             state.status=action.payload 
+        },
+        resetStatus(state:AuthState){
+            state.status='loading'
+        },
+        setToken(state:AuthState,action:PayloadAction<Status>){
+            state.user.token=action.payload
+
         }
     }
 
 })
 
-export const {setUser,setStatus}=authSlice.actions
+export const {setUser,setStatus,resetStatus,setToken}=authSlice.actions
 export default authSlice.reducer
 
 export function register(data:Registerdata){   
@@ -53,8 +61,8 @@ export function register(data:Registerdata){
         dispatch(setStatus('loading'))
        try {
         const response= await API.post('register',data)
-        if(response.status==201){
-            dispatch(setStatus('sucess'))
+        if(response.status==200){
+            dispatch(setStatus('success'))
         }
         else{
             dispatch(setStatus('error'))
@@ -72,7 +80,10 @@ export function login(data:Logindata){
         try {
             const response=await API.post('login',data)
             if(response.status == 200){
-                dispatch(setStatus('sucess'))
+                const {data}=response.data
+                dispatch(setStatus('success'))
+                dispatch(setToken(data))
+                localStorage.setItem('token',data)
             }else{
                 dispatch(setStatus('error'))
             }

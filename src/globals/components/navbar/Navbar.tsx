@@ -1,6 +1,22 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { useAppSelector } from "../../../store/hook"
+import { useEffect, useState } from "react"
 
 const Navbar=()=>{
+  const navigate=useNavigate() 
+    const{user}=useAppSelector((state)=>state.auth)
+    const [isLoggedIn,setIsLoggedIn] = useState<boolean>(false)
+
+    useEffect(()=>{
+      const token = localStorage.getItem('token')
+      setIsLoggedIn(!!token || !!user.token)
+    },[user.token])
+
+    const handleLogout=()=>{
+      localStorage.removeItem('token')
+      setIsLoggedIn(false)
+      navigate('/login')
+    }
     return(
         <header
           id="page-header"
@@ -31,7 +47,10 @@ const Navbar=()=>{
               </a>
             </div>
             <nav className="flex flex-wrap items-center justify-center gap-3 md:gap-6">
-              <Link
+              {
+                !isLoggedIn?(
+                  <>
+                  <Link
                 to="/register"
                 className="text-sm font-semibold text-gray-900 hover:text-blue-600 dark:text-gray-100 dark:hover:text-blue-400"
               >
@@ -43,12 +62,18 @@ const Navbar=()=>{
               >
                 <span>Login</span>
               </Link>
-              <Link
-                to="/logout"
+                  </>
+                ):( 
+                   <Link
+                to="#"
+                onClick={handleLogout}
                 className="text-sm font-semibold text-gray-900 hover:text-blue-600 dark:text-gray-100 dark:hover:text-blue-400"
               >
                 <span>Logout</span>
               </Link>
+                )
+              }
+             
             </nav>
           </div>
           {/* END Main Header Content */}

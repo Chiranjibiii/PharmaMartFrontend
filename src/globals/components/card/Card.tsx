@@ -1,20 +1,36 @@
-const Card = () => {
+import { Link } from "react-router-dom";
+import type { Product } from "../../../pages/auth/productTypes";
+
+
+
+interface CardProps{
+  data:Product
+}
+
+const Card:React.FC<CardProps>=({data})=>{
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md max-w-xs w-full">
+   <>
+    <Link to={`/product/${data.id}`}>
+
+     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md max-w-xs">
       <img
-        src="https://xalmeds.com/cdn/shop/files/Products-5_4d205b6c-c201-4241-9427-8403ec364d43_1500x.png?v=1753020416"
+        src={data.productImageUrl}
         alt="Product"
         className="rounded-t-lg p-4 h-48 w-full object-contain"
       />
 
       <div className="px-4 pb-4">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-          Apple Watch Series 7
+          {
+            data?.productName
+          }
         </h3>
 
         <div className="flex items-center justify-between mt-4">
           <span className="text-xl font-bold text-gray-900 dark:text-white">
-            $599
+           {
+            data.productPrice
+           }
           </span>
           <button className="bg-blue-600 text-white text-sm px-4 py-2 rounded-md">
             Add to cart
@@ -22,6 +38,8 @@ const Card = () => {
         </div>
       </div>
     </div>
+    </Link>
+   </>
   );
 };
 

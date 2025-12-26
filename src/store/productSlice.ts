@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Product, ProductState } from "../pages/auth/productTypes";
 import type { Status } from "../globals/types/types";
 import type { AppDispatch, RootState } from "./store";
-import API from "../http";
+import {API} from "../http";
 
 const initialState: ProductState = {
   product: [],

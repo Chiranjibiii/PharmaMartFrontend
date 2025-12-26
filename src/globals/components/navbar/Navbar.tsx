@@ -1,15 +1,21 @@
-import { Link, useNavigate } from "react-router-dom"
-import { useAppSelector } from "../../../store/hook"
+import { data, Link, useNavigate } from "react-router-dom"
+import { useAppDispatch, useAppSelector } from "../../../store/hook"
 import { useEffect, useState } from "react"
+import { fetchCartItems } from "../../../store/cartSlice"
 
 const Navbar=()=>{
   const navigate=useNavigate() 
+  const dispatch = useAppDispatch()
     const{user}=useAppSelector((state)=>state.auth)
     const [isLoggedIn,setIsLoggedIn] = useState<boolean>(false)
+    const {items} = useAppSelector((state)=>state.carts)  
+    console.log(items);
+    
 
     useEffect(()=>{
       const token = localStorage.getItem('token')
       setIsLoggedIn(!!token || !!user.token)
+      dispatch(fetchCartItems())
     },[user.token])
 
     const handleLogout=()=>{
@@ -25,8 +31,8 @@ const Navbar=()=>{
           {/* Main Header Content */}
           <div className="container mx-auto flex flex-col gap-4 px-4 text-center sm:flex-row sm:items-center sm:justify-between sm:gap-0 lg:px-8 xl:max-w-7xl">
             <div>
-              <a
-                href="#"
+              <Link
+                to="/"
                 className="group inline-flex items-center gap-2 text-lg font-bold text-gray-900 hover:text-gray-600 dark:text-gray-100 dark:hover:text-gray-300"
               >
                 <svg
@@ -44,37 +50,44 @@ const Navbar=()=>{
                   <circle cx={12} cy={12} r={4} />
                 </svg>
                 <span>Flow</span>
-              </a>
+              </Link>
             </div>
-            <nav className="flex flex-wrap items-center justify-center gap-3 md:gap-6">
-              {
-                !isLoggedIn?(
-                  <>
-                  <Link
-                to="/register"
-                className="text-sm font-semibold text-gray-900 hover:text-blue-600 dark:text-gray-100 dark:hover:text-blue-400"
-              >
-                <span>Register</span>
-              </Link>
-              <Link
-                to="/login"
-                className="text-sm font-semibold text-gray-900 hover:text-blue-600 dark:text-gray-100 dark:hover:text-blue-400"
-              >
-                <span>Login</span>
-              </Link>
-                  </>
-                ):( 
-                   <Link
-                to="#"
-                onClick={handleLogout}
-                className="text-sm font-semibold text-gray-900 hover:text-blue-600 dark:text-gray-100 dark:hover:text-blue-400"
-              >
-                <span>Logout</span>
-              </Link>
-                )
-              }
-             
-            </nav>
+   <nav className="flex flex-wrap items-center justify-center gap-3 md:gap-6">
+  {!isLoggedIn ? (
+    <>
+      <Link
+        to="/register"
+        className="text-sm font-bold text-white px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-400 shadow-md hover:from-blue-700 hover:to-blue-500 transform hover:scale-105 transition-all duration-300"
+      >
+        Register
+      </Link>
+      <Link
+        to="/login"
+        className="text-sm font-bold text-white px-5 py-2 rounded-lg bg-gradient-to-r from-green-600 to-green-400 shadow-md hover:from-green-700 hover:to-green-500 transform hover:scale-105 transition-all duration-300"
+      >
+        Login
+      </Link>
+    </>
+  ) : (
+    <>
+      <Link
+        to="/cart"
+        className="text-sm font-bold text-white px-5 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-purple-400 shadow-md hover:from-purple-700 hover:to-purple-500 transform hover:scale-105 transition-all duration-300"
+      >
+        Cart <sub className="text-xs">{items.length}</sub>
+      </Link>
+      <Link
+        to="#"
+        onClick={handleLogout}
+        className="text-sm font-bold text-white px-5 py-2 rounded-lg bg-gradient-to-r from-red-600 to-red-400 shadow-md hover:from-red-700 hover:to-red-500 transform hover:scale-105 transition-all duration-300"
+      >
+        Logout
+      </Link>
+    </>
+  )}
+</nav>
+
+
           </div>
           {/* END Main Header Content */}
         </header>
